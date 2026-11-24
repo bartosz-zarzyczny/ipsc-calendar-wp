@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>IPSC Calendar – dev preview</title>
+	<link rel="stylesheet" href="../ipsc-calendar/assets/css/calendar.css">
+	<style>
+		body { margin: 0; padding: 2rem clamp(1rem, 4vw, 3rem); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #fff; }
+		.dev-note { margin: 0 0 1.5rem; padding: .6rem 1rem; border-radius: 8px; background: #fff7e6; color: #7a4b00; font-size: .875rem; }
+		h1 { margin: 0 0 1rem; font-size: 1.75rem; }
+	</style>
+</head>
+<body>
+	<p class="dev-note">Development preview with mock data – not loaded by WordPress.</p>
+	<h1>Kalendarz zawodów</h1>
+
+	<div class="ipsc-cal" data-config='{"restUrl":"/wp-json/ipsc-calendar/v1/","lang":"pl","langSwitch":true,"view":"list","period":"upcoming","perPage":15,"restrictCategories":[],"syncUrl":true,"weekStart":1,"subscribe":{"feed":"https://example.org/?post_type=tribe_events&ical=1&eventDisplay=list","webcal":"webcal://example.org/?post_type=tribe_events&ical=1&eventDisplay=list","google":"https://www.google.com/calendar/render?cid=webcal%3A%2F%2Fexample.org%2F%3Fpost_type%3Dtribe_events%26ical%3D1%26eventDisplay%3Dlist","ical":"webcal://example.org/?post_type=tribe_events&ical=1&eventDisplay=list","outlook365":"https://outlook.office.com/owa?path=/calendar/action/compose&rru=addsubscription&url=webcal%3A%2F%2Fexample.org%2F%3Fpost_type%3Dtribe_events%26ical%3D1%26eventDisplay%3Dlist&name=Kalendarz","outlookLive":"https://outlook.live.com/owa?path=/calendar/action/compose&rru=addsubscription&url=webcal%3A%2F%2Fexample.org%2F%3Fpost_type%3Dtribe_events%26ical%3D1%26eventDisplay%3Dlist&name=Kalendarz","ics":"https://example.org/?post_type=tribe_events&ical=1&eventDisplay=list"}}'></div>
+
+	<script>
+		// Dev helper: ?devlang=en overrides the configured language.
+		(function () {
+			var params = new URLSearchParams(location.search);
+			var root = document.querySelector('.ipsc-cal');
+			var config = JSON.parse(root.dataset.config);
+			if (params.get('devlang')) { config.lang = params.get('devlang'); config.langSwitch = true; try { localStorage.removeItem('ipscCalendar.lang'); } catch (e) {} }
+			root.dataset.config = JSON.stringify(config);
+		})();
+	</script>
+	<!-- In WordPress this import map is printed by wp_register_script_module(). -->
+	<script type="importmap">
+	{
+		"imports": {
+			"ipsc-calendar/date": "../ipsc-calendar/assets/js/date.js",
+			"ipsc-calendar/i18n": "../ipsc-calendar/assets/js/i18n.js",
+			"ipsc-calendar/dom": "../ipsc-calendar/assets/js/dom.js",
+			"ipsc-calendar/api": "../ipsc-calendar/assets/js/api.js",
+			"ipsc-calendar/filters": "../ipsc-calendar/assets/js/filters.js",
+			"ipsc-calendar/state": "../ipsc-calendar/assets/js/state.js",
+			"ipsc-calendar/components/event": "../ipsc-calendar/assets/js/components/event.js",
+			"ipsc-calendar/views/list": "../ipsc-calendar/assets/js/views/list.js",
+			"ipsc-calendar/views/month": "../ipsc-calendar/assets/js/views/month.js",
+			"ipsc-calendar/app": "../ipsc-calendar/assets/js/app.js"
+		}
+	}
+	</script>
+	<!-- The mock must patch fetch() before the app module runs. -->
+	<script src="mock-api.js"></script>
+	<script type="module">import 'ipsc-calendar/app';</script>
+</body>
+</html>
